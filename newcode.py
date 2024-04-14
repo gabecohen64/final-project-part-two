@@ -95,7 +95,7 @@ class RacingGame:
 
         for event in events:
             if event == self.pit_stop:
-                pass
+                event(self.player_driver, self.player_car, self.player_pit_crew)
             else:
                 event_outcome = event(self.player_driver, self.player_car, opponent_driver, opponent_car)
 
@@ -106,7 +106,27 @@ class RacingGame:
         self.num_races -= 1
         self.races_left_label.config(text="Races Left: {}".format(self.num_races))
 
-        self.upgrade_menu()
+        # Check if the game is over
+        if self.num_races == 0:
+            print("Game Over!")
+            self.master.destroy()
+        else:
+            self.upgrade_menu()
+
+    def pit_stop(self, player_driver, player_car, player_pit_crew):
+        print("\nTime for a pit stop!")
+
+        # Calculate pit stop time based on pit crew level
+        pit_stop_time = player_pit_crew.pit_stop_time()
+        print(f"Pit stop time: {pit_stop_time} seconds")
+
+        # Simulate pit stop time
+        print("Executing pit stop...")
+        for i in range(int(pit_stop_time)):
+            print(f"{i+1} seconds...")
+            self.master.after(1000)  # Delay for 1 second
+
+        print("Pit stop complete!")
 
     def upgrade_menu(self):
         self.upgrade_window = tk.Toplevel(self.master)
@@ -135,8 +155,11 @@ class RacingGame:
         self.upgrade_window.destroy()
 
     def upgrade_pit_crew(self):
-        self.player_pit_crew.upgrade()
-        self.pit_crew_label.config(text=f"Player's Pit Crew Level: {self.player_pit_crew.level}")
+        if self.player_pit_crew.level < 4:
+            self.player_pit_crew.upgrade()
+            self.pit_crew_label.config(text=f"Player's Pit Crew Level: {self.player_pit_crew.level}")
+        else:
+            print("Pit crew is already at maximum level.")
         self.upgrade_window.destroy()
 
     def straight_battle(self, player_driver, player_car, opponent_driver, opponent_car):
@@ -149,9 +172,6 @@ class RacingGame:
         pass
 
     def high_speed_corner_battle(self, player_driver, player_car, opponent_driver, opponent_car):
-        pass
-
-    def pit_stop(self, player_pit_crew):
         pass
 
 root = tk.Tk()
