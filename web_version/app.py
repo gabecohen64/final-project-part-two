@@ -3,8 +3,6 @@ import random
 
 app = Flask(__name__)
 
-app = Flask(__name__)
-
 
 class Driver:
     def __init__(self):
